@@ -16,9 +16,9 @@ class LocalDevelopmentConfig(Config):
     # SQLITE_DB_DIR = os.path.join(basedir)
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, 'database.sqlite3')
     DEBUG = True
-    SECRET_KEY =  '20ef228e4e1e46f3b30d199701184814' #Strong,random and should be in the evn
+    SECRET_KEY =  'Random Hashed Key' #Strong,random and should be in the evn
     SECURITY_PASSWORD_HASH = "bcrypt"    
-    SECURITY_PASSWORD_SALT = '169a0d404e624756b11be1e1eeca02cc' # Read from ENV in your case
+    SECURITY_PASSWORD_SALT = 'Other Random Hashed Key' # Read from ENV in your case
     SECURITY_REGISTERABLE = True
     SECURITY_CONFIRMABLE = False
     SECURITY_SEND_REGISTER_EMAIL = False
@@ -35,9 +35,9 @@ class StageConfig(Config):
     # SQLITE_DB_DIR = os.path.join(basedir)
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, 'database.sqlite3')
     DEBUG = True
-    SECRET_KEY =  '20ef228e4e1e46f3b30d199701184814' #Strong,random and should be in the evn
+    SECRET_KEY =  'Random Hashed Key' #Strong,random and should be in the evn
     SECURITY_PASSWORD_HASH = "bcrypt"    
-    SECURITY_PASSWORD_SALT = '169a0d404e624756b11be1e1eeca02cc' # Read from ENV in your case
+    SECURITY_PASSWORD_SALT = 'Other Random Hashed KEY' # Read from ENV in your case
     SECURITY_REGISTERABLE = True
     SECURITY_CONFIRMABLE = False
     SECURITY_SEND_REGISTER_EMAIL = False
