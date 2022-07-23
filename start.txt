@@ -1,0 +1,6 @@
+To start the virtual environment in windows:
+Use MAD-Project-venv, by running the following command: MAD-Project-venv\Scripts\activate
+
+For bash or linux use venv, by running: source venv/bin/activate
+
+After which the virtual environment starts for our application to run.

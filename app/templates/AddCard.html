@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>User</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <style>
+            button {   
+              background-color: green;   
+              width: 100%;  
+              color: orange;   
+              padding: 15px;   
+              margin: 10px 0px;   
+              border: none;   
+              cursor: pointer;   
+              }  
+              form {   
+              border: 3px solid #f1f1f1;   
+              padding: 25px;
+              background-color: transparent;
+              opacity: 0.7;
+              
+              top: 50%;
+              left: 50%;
+              transform: translate(0%, 25%)
+          } 
+          input {   
+              width: 100%;   
+              margin: 8px 0;  
+              padding: 12px 20px;   
+              display: inline-block;   
+              border: 2px solid green;   
+              box-sizing: border-box;   
+          } 
+        </style>
+        <link rel="icon" href="data:,">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+         crossorigin="anonymous">
+         <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    </head>
+    <body style="background-color: bisque;">
+      <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid">
+            <a class="nav-link disabled">Hi User</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-link active" aria-current="page" href="/dashboard">Home</a>
+                <a class="nav-link" href="/review">Review</a>
+              </div>
+            </div>
+          </div>
+        </nav>    
+      <div style="background-color:bisque;padding:10px;">
+          <label>Front of the card</label>
+          <input type="text" v-model="Front" placeholder="Enter question for the Card" required>
+          
+          <label>Back of the card</label>
+          <input type="text" v-model="Back" placeholder="Enter the answer for the Card" required>
+          <button type="submit" v-on:click="submitdata">Submit</button>
+      </div>
+      </div>
+        
+        <script>
+          var app=new Vue({
+            el:"#app",
+            data:{
+              Back:"",
+              Front:"",
+              DeckId:"",
+              url:""
+            },created(){
+                if(sessionStorage.auth_token){
+                  this.url="http://"+window.location.href.split("/")[2];
+                  return true;
+                }
+                document.getElementById("app").innerHTML=` <p>You are not logged in: <a href="/">Login Here</a></p>`;
+                return false;
+              },
+            methods:{
+              submitdata: async function(){
+                let url=window.location.href;
+                let start=0;
+                while(start<=url.length-1 && url.indexOf("/",start+1)!=-1){
+                  start+=1;
+                }
+                this.DeckId=url.substring(start+1,);
+                let k={
+                    front:this.Front,
+                    back:this.Back
+                  };
+                let p=await fetch(this.url+'/user/'+this.DeckId+'/cards',{
+                  method:"POST",
+                  headers:{
+                    'Authentication-Token':sessionStorage.auth_token,
+                    'Content-Type':'application/json'
+                  },
+                  body:JSON.stringify(k)
+                }).then(r=>r.json());
+                if(await p.front && p.back){
+                  alert("New Card created successfully!");
+                  window.location=this.url+"/deck/"+this.DeckId
+                }
+                else{
+                  alert("Failed!! due to: "+Object.values(p)[0]);
+                  window.location=window.location;
+                }
+              }
+            }
+          })
+        </script>
+    </body>
+</html>

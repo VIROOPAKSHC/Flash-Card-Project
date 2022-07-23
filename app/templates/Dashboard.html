@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>User</title>
+	<style>
+		html {
+			background-color: bisque;
+		}
+
+		Body {
+			font-family: sans-serif;
+			background-color: bisque;
+		}
+
+		button {
+			background-color: blue;
+			color: white;
+		}
+	</style>
+  <link rel="icon" href="data:,">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+	 crossorigin="anonymous">
+   <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+
+<body style="background-color: bisque;">
+        <div id="app">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+              <a class="nav-link disabled">Hi User</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                      <a class="nav-link active" aria-current="page" href="/dashboard">Home</a>
+                      <a class="nav-link" href="/review">Review</a>
+                      <a class="nav-link" v-on:click="logout" style="text-align: right;">Logout</a>
+                      <a class="nav-link" href="/export">Export Decks</a>
+                    </div>
+                  </div>
+                
+              </nav>
+              <div v-if="nodecks">
+
+                <div v-for="deck of decks"> 
+                  <div class="col-sm-6" style="padding:10px;">
+                    <div class="card" style="background-color:white;color:black;">
+                      <div class="card-body">
+                        <h5 class="card-title">${deck.name}</h5>
+                        <p class="card-text">${deck.description} </p>
+                        <button class="btn-primary" v-on:click="editfunc(deck.id)" >Edit</button>
+                        <button class="btn-primary" v-on:click="deletefunc(deck.id)" >Delete</button>
+                        <p>Last reviewed: ${deck.last_rev}</p>
+                        <p>Score: ${deck.score}</p>
+                        <button class="btn-primary" v-on:click="exporting(deck)">Export Deck</button>
+                        <button class="btn-primary" v-on:click="seedeckfunc(deck.id)">See deck</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-else>No Decks</div>
+              <div><a href="/AddDeck"><button class="btn-primary" >Add or Import deck</button></a></div>
+          </div>
+          
+        
+                
+        <script>
+         
+          var app=new Vue({
+            el:"#app",
+            delimiters: ['${', '}'],
+            data:{
+              decks: [],
+              nodecks:true,
+              url:""
+            },
+            created(){
+                if(sessionStorage.auth_token){
+                  this.url="http://"+window.location.href.split("/")[2];
+                  this.getdata();
+                  return true;
+                }
+                document.getElementById("app").innerHTML=` <p>You are not logged in: <a href="/">Login Here</a></p>`;
+                return false;
+              },
+          methods:{
+            exporting: function(deck){
+              window.location.href=this.url+'/export/deck/'+deck.id;
+            },
+            getdata: async function(){
+                let token=sessionStorage.auth_token;
+                let p=await fetch(this.url+"/getuserdetails",{
+                  headers: {
+                    'Authentication-Token' : token
+                  },
+                }).then(r=>r.json());
+                if(p.length){
+                  nodecks=false;
+                }
+                this.decks=p;
+            },
+            editfunc:function(id){
+              window.location.href=this.url+"/editdeck/"+id
+            },
+            seedeckfunc: function(id){
+              window.location.href=this.url+"/deck/"+id
+            },
+            deletefunc: async function(id){
+              let p=await fetch(this.url+"/user/"+id,{
+                method:"DELETE",
+                headers:{
+                  'Authentication-Token' :sessionStorage.auth_token
+                }
+              }).then(r=>r.json());
+              if(p.status_code){
+                alert("Successfully Deleted!!");
+                window.location.href=this.url+"/dashboard"
+              }
+              else{
+                alert("Deck was not deleted");
+              }
+
+            },
+            logout: function(){
+              sessionStorage.clear();
+              window.location.href=this.url+"/"
+            }
+          }
+          })
+          
+        </script>
+    </body>
+</html>
