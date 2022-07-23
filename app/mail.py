@@ -9,8 +9,8 @@ def send_email(to_address,subject,message):
     # try:
     #     SMTP_SERVER_HOST='smtp.gmail.com'
     #     SMTP_SERVER_PORT=587
-    #     SENDER_ADDRESS=os.getenv('email','chekuriviroopaksh4950@gmail.com')
-    #     SENDER_PASSWORD=os.getenv('password','viroopak')
+    #     SENDER_ADDRESS=os.getenv('email','<your-email-address>')
+    #     SENDER_PASSWORD=os.getenv('password','<some password>')
     #     msg=MIMEMultipart()
     #     msg['From']=SENDER_ADDRESS
     #     msg['To']=to_address
